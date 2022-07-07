@@ -23,11 +23,20 @@ sigma = 0.3;
 %        mean(double(predictions ~= yval))
 %
 
-
-
-
-
-
+candidate = [0.01,0.03,0.1,0.3,1,3,10,30];
+for i = 1:8
+    c_candidate = candidate(i);
+    for j = 1:8
+        sigma_candidate = candidate(j);
+        model = svmTrain(X, y, c_candidate, @(x1, x2) gaussianKernel(x1, x2, sigma_candidate)); 
+        predictions = svmPredict(model, Xval);
+        score(i, j) = mean(double(predictions ~= yval));
+    end
+end    
+M = min(score(:));
+[row, col] = find(score == M);
+C = candidate(row);
+sigma = candidate(col);
 
 % =========================================================================
 
